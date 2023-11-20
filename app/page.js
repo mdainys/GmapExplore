@@ -14,7 +14,7 @@ export default function Home() {
     googleMapsApiKey: API_KEY,
   });
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
+    <main className="flex min-h-screen flex-col p-24">
       <h1>Gmap Explorer</h1>
       {gmapIsLoaded ? <Gmap center={defaultCenter} /> : <h2>Is Loading</h2>}
     </main>
