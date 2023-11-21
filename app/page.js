@@ -58,6 +58,7 @@ const Map = () => {
     // Update the draggable marker's position
     if (draggableMarker) {
       draggableMarker.setLngLat([lng, lat]);
+      setMarkers(newMarkers);
     }
 
     const newMarkers = [...markers, { lng, lat }];
