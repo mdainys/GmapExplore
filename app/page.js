@@ -3,8 +3,7 @@ import React, { useEffect, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 
-mapboxgl.accessToken =
-  "pk.eyJ1IjoibWFyaXVzLWRhaW55cyIsImEiOiJjbHA4M2hqNXYyZm9vMmlxdTdscnNlMXY3In0.8aAukwmoAfhAAFRpY59-Mw";
+mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
 
 const Map = () => {
   const [map, setMap] = useState(null);
@@ -14,8 +13,8 @@ const Map = () => {
   useEffect(() => {
     const initializeMap = () => {
       const newMap = new mapboxgl.Map({
-        container: "map", // container ID
-        style: "mapbox://styles/mapbox/streets-v12", // style URL
+        container: "map",
+        style: "mapbox://styles/mapbox/streets-v12",
         center: [-24, 42],
         zoom: 1,
       });
@@ -30,19 +29,17 @@ const Map = () => {
         })
       );
 
-      // Create draggable marker
       const newDraggableMarker = new mapboxgl.Marker({
         color: "#f70776",
         draggable: true,
       })
-        .setLngLat([26.432618433465706, 55.60395540961798])
+        .setLngLat([26.432730917247454, 55.60407906787367])
         .addTo(newMap);
 
       setMap(newMap);
       setDraggableMarker(newDraggableMarker);
 
-      // Listen for the dragend event on the draggable marker
-      newDraggableMarker.on("dragend", handleMarkerDragEnd);
+      newMap.on("click", handleMapClick);
     };
 
     initializeMap();
@@ -54,30 +51,29 @@ const Map = () => {
     };
   }, []); // Only run this effect on mount and unmount
 
-  const handleMarkerDragEnd = () => {
-    // Get the new position of the draggable marker
-    const { lng, lat } = draggableMarker.getLngLat();
+  const handleMapClick = (event) => {
+    const { lng, lat } = event.lngLat;
 
-    // Update the list of markers with the new position
-    const newMarkers = [...markers];
-    newMarkers.pop(); // Remove the previous marker
-    newMarkers.push({ lng, lat });
+    // Update the draggable marker's position
+    if (draggableMarker) {
+      draggableMarker.setLngLat([lng, lat]);
+    }
+
+    const newMarkers = [...markers, { lng, lat }];
     setMarkers(newMarkers);
   };
 
   return (
     <>
       <div>
-        <h2>Markers:</h2>
-        <ul>
-          {markers.map((marker, index) => (
-            <li
-              key={index}
-            >{`Longitude: ${marker.lng}, Latitude: ${marker.lat}`}</li>
-          ))}
-        </ul>
+        <h3>Marker coordinate:</h3>
       </div>
-      <div id="map" style={{ width: "90%", height: "80vh" }} />
+      {markers.map((marker, index) => (
+        <li
+          key={index}
+        >{`Longitude: ${marker.lng}, Latitude: ${marker.lat}`}</li>
+      ))}
+      <div id="map" style={{ width: "80%", height: "80vh" }} />
     </>
   );
 };
