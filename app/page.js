@@ -31,7 +31,7 @@ const Map = () => {
       );
 
       const newDraggableMarker = new mapboxgl.Marker({
-        color: "#81c784",
+        color: "#f70776",
         draggable: true,
       })
         .setLngLat([26.432730917247454, 55.60407906787367])
