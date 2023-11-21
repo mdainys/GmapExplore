@@ -69,9 +69,10 @@ const Map = () => {
         <h3>Marker coordinate:</h3>
       </div>
       {markers.map((marker, index) => (
-        <li
-          key={index}
-        >{`Longitude: ${marker.lng}, Latitude: ${marker.lat}`}</li>
+        <ul key={index}>
+          <li>{`Longitude: ${marker.lng}`}</li>
+          <li>{`Latitude: ${marker.lat}`}</li>
+        </ul>
       ))}
       <div id="map" style={{ width: "80%", height: "80vh" }} />
     </>
