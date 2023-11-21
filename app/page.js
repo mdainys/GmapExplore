@@ -26,7 +26,11 @@ const Map = () => {
           },
           trackUserLocation: true,
           showUserHeading: true,
-        })
+        }),
+        new MapboxDirections({
+          accessToken: mapboxgl.accessToken,
+        }),
+        "top-left"
       );
 
       const newDraggableMarker = new mapboxgl.Marker({
@@ -40,6 +44,12 @@ const Map = () => {
       setDraggableMarker(newDraggableMarker);
 
       newMap.on("click", handleMapClick);
+
+      // Add NavigationControl to the map
+      const nav = new mapboxgl.NavigationControl({
+        visualizePitch: true,
+      });
+      newMap.addControl(nav, "bottom-right");
     };
 
     initializeMap();
@@ -54,7 +64,6 @@ const Map = () => {
   const handleMapClick = (event) => {
     const { lng, lat } = event.lngLat;
 
-    // Update the draggable marker's position
     if (draggableMarker) {
       draggableMarker.setLngLat([lng, lat]);
     }
