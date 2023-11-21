@@ -14,8 +14,8 @@ const Map = () => {
   useEffect(() => {
     const initializeMap = () => {
       const newMap = new mapboxgl.Map({
-        container: "map",
-        style: "mapbox://styles/mapbox/streets-v12",
+        container: "map", // container ID
+        style: "mapbox://styles/mapbox/streets-v12", // style URL
         center: [-24, 42],
         zoom: 1,
       });
@@ -30,6 +30,7 @@ const Map = () => {
         })
       );
 
+      // Create draggable marker
       const newDraggableMarker = new mapboxgl.Marker({
         color: "#f70776",
         draggable: true,
@@ -40,7 +41,7 @@ const Map = () => {
       setMap(newMap);
       setDraggableMarker(newDraggableMarker);
 
-      newMap.on("click", handleMapClick);
+      // Listen for the dragend event on the draggable marker
       newDraggableMarker.on("dragend", handleMarkerDragEnd);
     };
 
@@ -51,35 +52,32 @@ const Map = () => {
         map.remove();
       }
     };
-  }, []);
-
-  const handleMapClick = (event) => {
-    const { lng, lat } = event.lngLat;
-
-    if (draggableMarker) {
-      draggableMarker.setLngLat([lng, lat]);
-    }
-  };
+  }, []); // Only run this effect on mount and unmount
 
   const handleMarkerDragEnd = () => {
+    // Get the new position of the draggable marker
     const { lng, lat } = draggableMarker.getLngLat();
 
-    const newMarkers = [...markers, { lng, lat }];
+    // Update the list of markers with the new position
+    const newMarkers = [...markers];
+    newMarkers.pop(); // Remove the previous marker
+    newMarkers.push({ lng, lat });
     setMarkers(newMarkers);
   };
 
   return (
     <>
       <div>
-        <h3>Marker coordinate:</h3>
-      </div>
-      {markers.map((marker, index) => (
-        <ul key={index}>
-          <li>{`Longitude: ${marker.lng}`}</li>
-          <li>{`Latitude: ${marker.lat}`}</li>
+        <h2>Markers:</h2>
+        <ul>
+          {markers.map((marker, index) => (
+            <li
+              key={index}
+            >{`Longitude: ${marker.lng}, Latitude: ${marker.lat}`}</li>
+          ))}
         </ul>
-      ))}
-      <div id="map" style={{ width: "80%", height: "90vh" }} />
+      </div>
+      <div id="map" style={{ width: "90%", height: "80vh" }} />
     </>
   );
 };
