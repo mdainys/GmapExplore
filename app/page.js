@@ -7,8 +7,10 @@ mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
 
 const Map = () => {
   const [map, setMap] = useState(null);
-  const [markers, setMarkers] = useState([]);
-  const [draggableMarker, setDraggableMarker] = useState(null);
+  const [currentLocation, setCurrentLocation] = useState({
+    longitude: 0,
+    latitude: 0,
+  });
 
   useEffect(() => {
     const initializeMap = () => {
@@ -19,33 +21,27 @@ const Map = () => {
         zoom: 1,
       });
 
-      newMap.addControl(
-        new mapboxgl.GeolocateControl({
-          positionOptions: {
-            enableHighAccuracy: true,
-          },
-          trackUserLocation: true,
-          showUserHeading: true,
-        }),
-        new MapboxDirections({
-          accessToken: mapboxgl.accessToken,
-        }),
-        "top-left"
-      );
+      const geolocateControl = new mapboxgl.GeolocateControl({
+        positionOptions: {
+          enableHighAccuracy: true,
+        },
+        trackUserLocation: true,
+        showUserHeading: true,
+      });
 
-      const newDraggableMarker = new mapboxgl.Marker({
-        color: "#f70776",
-        draggable: true,
-      })
-        .setLngLat([26.432730917247454, 55.60407906787367])
-        .addTo(newMap);
+      geolocateControl.on("geolocate", (event) => {
+        const { longitude, latitude } = event.coords;
+
+        setCurrentLocation({ longitude, latitude });
+
+        newMap.setCenter([longitude, latitude]);
+      });
+
+      newMap.addControl(geolocateControl);
 
       setMap(newMap);
-      setDraggableMarker(newDraggableMarker);
 
-      newMap.on("click", handleMapClick);
-
-      // Add NavigationControl to the map
+      // Map Navigation Button's
       const nav = new mapboxgl.NavigationControl({
         visualizePitch: true,
       });
@@ -59,29 +55,15 @@ const Map = () => {
         map.remove();
       }
     };
-  }, []); // Only run this effect on mount and unmount
-
-  const handleMapClick = (event) => {
-    const { lng, lat } = event.lngLat;
-
-    if (draggableMarker) {
-      draggableMarker.setLngLat([lng, lat]);
-    }
-
-    const newMarkers = [...markers, { lng, lat }];
-    setMarkers(newMarkers);
-  };
+  }, []);
 
   return (
     <>
       <div>
-        <h3>Marker coordinate:</h3>
+        <h3>Marker current location:</h3>
+        <p>Longitude: {currentLocation.longitude.toFixed(6)}</p>
+        <p>Latitude: {currentLocation.latitude.toFixed(6)}</p>
       </div>
-      {markers.map((marker, index) => (
-        <li
-          key={index}
-        >{`Longitude: ${marker.lng}, Latitude: ${marker.lat}`}</li>
-      ))}
       <div id="map" style={{ width: "80%", height: "80vh" }} />
     </>
   );
