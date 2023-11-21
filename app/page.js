@@ -66,17 +66,15 @@ const Map = () => {
 
   return (
     <>
-      <h1>Marius</h1>
+      <div>
+        <h3>Marker coordinate:</h3>
+      </div>
       {markers.map((marker, index) => (
         <li
           key={index}
         >{`Longitude: ${marker.lng}, Latitude: ${marker.lat}`}</li>
       ))}
-      <div id="map" style={{ width: "100%", height: "100vh" }} />
-      <div>
-        <h2>Markers:</h2>
-        <ul></ul>
-      </div>
+      <div id="map" style={{ width: "80%", height: "80vh" }} />
     </>
   );
 };
