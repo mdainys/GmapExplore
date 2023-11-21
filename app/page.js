@@ -14,8 +14,8 @@ const Map = () => {
   useEffect(() => {
     const initializeMap = () => {
       const newMap = new mapboxgl.Map({
-        container: "map", // container ID
-        style: "mapbox://styles/mapbox/streets-v12", // style URL
+        container: "map",
+        style: "mapbox://styles/mapbox/streets-v12",
         center: [-24, 42],
         zoom: 1,
       });
@@ -30,9 +30,8 @@ const Map = () => {
         })
       );
 
-      // Create draggable marker
       const newDraggableMarker = new mapboxgl.Marker({
-        color: "#FFFFFF",
+        color: "#f70776",
         draggable: true,
       })
         .setLngLat([26.432618433465706, 55.60395540961798])
@@ -42,8 +41,6 @@ const Map = () => {
       setDraggableMarker(newDraggableMarker);
 
       newMap.on("click", handleMapClick);
-
-      // Listen for the dragend event on the draggable marker
       newDraggableMarker.on("dragend", handleMarkerDragEnd);
     };
 
@@ -54,24 +51,19 @@ const Map = () => {
         map.remove();
       }
     };
-  }, []); // Only run this effect on mount and unmount
+  }, []);
 
   const handleMapClick = (event) => {
     const { lng, lat } = event.lngLat;
 
-    // Update the draggable marker's position
     if (draggableMarker) {
       draggableMarker.setLngLat([lng, lat]);
-      const newMarkers = [...markers, { lng, lat }];
-      setMarkers(newMarkers);
     }
   };
 
   const handleMarkerDragEnd = () => {
-    // Get the new position of the draggable marker
     const { lng, lat } = draggableMarker.getLngLat();
 
-    // Update the list of markers with the new position
     const newMarkers = [...markers, { lng, lat }];
     setMarkers(newMarkers);
   };
@@ -87,7 +79,7 @@ const Map = () => {
           <li>{`Latitude: ${marker.lat}`}</li>
         </ul>
       ))}
-      <div id="map" style={{ width: "80%", height: "80vh" }} />
+      <div id="map" style={{ width: "80%", height: "90vh" }} />
     </>
   );
 };
