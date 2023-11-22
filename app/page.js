@@ -33,7 +33,7 @@ const Map = () => {
     const initializeMap = () => {
       const newMap = new mapboxgl.Map({
         container: "map",
-        style: "mapbox://styles/mapbox/streets-v12",
+        style: "mapbox://styles/marius-dainys/clp9few1a001k01r558qmgu8l",
         center: [26.432730917247454, 55.60407906787367],
         zoom: 15,
       });
