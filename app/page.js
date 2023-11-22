@@ -2,6 +2,8 @@
 import React, { useEffect, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
+import MapInfo from "@/components/MapInfo";
+import { calculateDistance } from "./utils/helpers";
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
 
@@ -14,21 +16,6 @@ const Map = () => {
   const [draggableMarker, setDraggableMarker] = useState(null);
   const [distance, setDistance] = useState(null);
   const [approachAlertShown, setApproachAlertShown] = useState(false);
-
-  const calculateDistance = (point1, point2) => {
-    const R = 6371;
-    const dLat = (point2.latitude - point1.latitude) * (Math.PI / 180);
-    const dLon = (point2.longitude - point1.longitude) * (Math.PI / 180);
-    const a =
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(point1.latitude * (Math.PI / 180)) *
-        Math.cos(point2.latitude * (Math.PI / 180)) *
-        Math.sin(dLon / 2) *
-        Math.sin(dLon / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    const distance = R * c * 1000; // Distance in meters
-    return distance;
-  };
 
   useEffect(() => {
     const initializeMap = () => {
@@ -119,12 +106,7 @@ const Map = () => {
 
   return (
     <>
-      <div>
-        <h3>Marker current location:</h3>
-        <p>Longitude: {currentLocation.longitude.toFixed(6)}</p>
-        <p>Latitude: {currentLocation.latitude.toFixed(6)}</p>
-        <p>Distance between markers: {distance} meters</p>
-      </div>
+      <MapInfo currentLocation={currentLocation} distance={distance} />
       <div id="map" style={{ width: "80%", height: "80vh" }} />
     </>
   );
