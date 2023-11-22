@@ -13,6 +13,7 @@ const Map = () => {
   });
   const [draggableMarker, setDraggableMarker] = useState(null);
   const [distance, setDistance] = useState(null);
+  const [approachAlertShown, setApproachAlertShown] = useState(false);
 
   const calculateDistance = (point1, point2) => {
     const R = 6371;
@@ -76,7 +77,7 @@ const Map = () => {
 
     return () => {
       if (map) {
-        newMap.remove();
+        map.remove();
       }
     };
   }, []);
@@ -90,6 +91,16 @@ const Map = () => {
           latitude: markerLngLat.lat,
         });
         setDistance(distance.toFixed(2));
+
+        // Check if the distance is below a certain threshold (e.g., 10 meters)
+        const threshold = 10;
+        if (distance < threshold && !approachAlertShown) {
+          setApproachAlertShown(true);
+          alert("Marker approached!");
+        } else if (distance >= threshold && approachAlertShown) {
+          // Reset the flag when the distance is above the threshold again
+          setApproachAlertShown(false);
+        }
       }
     };
 
@@ -104,7 +115,7 @@ const Map = () => {
         map.off("move", handleMove);
       }
     };
-  }, [draggableMarker, currentLocation, map]);
+  }, [draggableMarker, currentLocation, map, approachAlertShown]);
 
   return (
     <>
