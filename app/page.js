@@ -25,7 +25,7 @@ const Map = () => {
         Math.sin(dLon / 2) *
         Math.sin(dLon / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    const distance = R * c; // Distance in kilometers
+    const distance = R * c * 1000; // Distance in meters
     return distance;
   };
 
@@ -33,7 +33,7 @@ const Map = () => {
     const initializeMap = () => {
       const newMap = new mapboxgl.Map({
         container: "map",
-        style: "mapbox://styles/marius-dainys/clp9few1a001k01r558qmgu8l",
+        style: "mapbox://styles/marius-dainys/clp87nlcx01tq01o4hv8ybcc1",
         center: [26.432730917247454, 55.60407906787367],
         zoom: 15,
       });
@@ -76,7 +76,7 @@ const Map = () => {
 
     return () => {
       if (map) {
-        map.remove();
+        newMap.remove();
       }
     };
   }, []);
@@ -112,7 +112,7 @@ const Map = () => {
         <h3>Marker current location:</h3>
         <p>Longitude: {currentLocation.longitude.toFixed(6)}</p>
         <p>Latitude: {currentLocation.latitude.toFixed(6)}</p>
-        <p>Distance between markers: {distance} km</p>
+        <p>Distance between markers: {distance} meters</p>
       </div>
       <div id="map" style={{ width: "80%", height: "80vh" }} />
     </>
